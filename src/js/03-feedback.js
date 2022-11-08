@@ -19,6 +19,8 @@ if (localStorage.getItem(FIELDVALUES_KEY)) {
 function onInputHandler(event) {
   if (event.target.nodeName === 'INPUT') {
     inputValues.email = event.target.value;
+  } else if (event.target.nodeName === 'TEXTAREA') {
+    inputValues.message = event.target.value;
   }
   localStorage.setItem(FIELDVALUES_KEY, JSON.stringify(inputValues));
 }
