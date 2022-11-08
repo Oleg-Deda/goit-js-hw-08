@@ -26,6 +26,7 @@ galleryEl.galleryRef.insertAdjacentHTML(
   createGalleryMarkup(galleryItems)
 );
 
-new SimpleLightbox('.gallery a', {
+let simpleLightBoxGallery = new SimpleLightbox('.gallery a', {
   captionsData: 'alt',
+  captionDelay: 250,
 });
