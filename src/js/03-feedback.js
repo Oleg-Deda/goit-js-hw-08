@@ -1,35 +1,39 @@
 import throttle from 'lodash.throttle';
 
 const feedbackFormEl = document.querySelector('.feedback-form');
-const inputValues = {};
-const FIELDVALUES_KEY = 'feedback-form-state';
 
-if (localStorage.getItem(FIELDVALUES_KEY)) {
-  try {
-    const parcedValues = JSON.parse(localStorage.getItem(FIELDVALUES_KEY));
+const FEEDBACK_KEY = 'feedback-form-state';
+feedbackFormEl.addEventListener('input', throttle(onFeedbackCatcher, 500));
+feedbackFormEl.addEventListener('submit', onSubmit);
 
-    feedbackFormEl.elements.email.value = parcedValues.email;
-    feedbackFormEl.elements.message.value = parcedValues.message;
-  } catch (error) {
-    console.log(error.name);
-    console.log(error.message);
+const userData = {};
+updateUserData();
+
+function onFeedbackCatcher() {
+  userData.email = feedbackFormEl.elements.email.value;
+  userData.message = feedbackFormEl.elements.message.value;
+  localStorage.setItem(FEEDBACK_KEY, JSON.stringify(userData));
+}
+
+function onSubmit(e) {
+  e.preventDefault();
+  if (
+    feedbackFormEl.elements.email.value &&
+    feedbackFormEl.elements.message.value
+  ) {
+    console.log(userData);
+
+    e.currentTarget.reset();
+
+    localStorage.removeItem(FEEDBACK_KEY);
   }
 }
 
-function onInputHandler(event) {
-  if (event.target.nodeName === 'INPUT') {
-    inputValues.email = event.target.value;
-  } else if (event.target.nodeName === 'TEXTAREA') {
-    inputValues.message = event.target.value;
+function updateUserData() {
+  if (localStorage.getItem(FEEDBACK_KEY)) {
+    const userData = JSON.parse(localStorage.getItem(FEEDBACK_KEY) || '');
+    feedbackFormEl.elements.email.value = userData.email;
+    feedbackFormEl.elements.message.value = userData.message;
   }
-  localStorage.setItem(FIELDVALUES_KEY, JSON.stringify(inputValues));
-}
-function onFormSubmit(event) {
-  event.preventDefault();
-  localStorage.removeItem(FIELDVALUES_KEY);
-  feedbackFormEl.reset();
-  console.log(inputValues);
 }
 
-feedbackFormEl.addEventListener('input', throttle(onInputHandler, 500));
-feedbackFormEl.addEventListener('submit', onFormSubmit);
